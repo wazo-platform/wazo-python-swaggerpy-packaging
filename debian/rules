@@ -1,8 +1,15 @@
 #!/usr/bin/make -f
 # -*- makefile -*-
 
+PKG = $(word 2,$(shell dpkg-parsechangelog | grep Source))
+VER ?= $(shell cat VERSION)
+SWAGGERPY_URL_DOWNLOAD = "https://github.com/digium/swagger-py/archive/${VER}.tar.gz"
+
 %:
 	dh $@ --with python2
 
-override_dh_auto_build:
-	./fetch_tarball.sh
+.PHONY: get-orig-source
+
+get-orig-source:
+	@echo "# Downloading..."
+	wget -nv -T10 -t3 $(SWAGGERPY_URL_DOWNLOAD) -O ../$(PKG)_$(VER).orig.tar.gz

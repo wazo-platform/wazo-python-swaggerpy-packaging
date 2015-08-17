@@ -1,8 +1,14 @@
+xivo-python-swaggerpy-packaging (0.2.1-1~xivo3) xivo-dev; urgency=medium
+
+  * Using quilt format to patch package
+
+ -- Sylvain Boily <sboily@avencall.com>  Sun, 16 Aug 2015 20:36:18 -0400
+
 xivo-python-swaggerpy-packaging (0.2.1-1~xivo2) xivo-dev; urgency=medium
 
   * Added patches to fixes params with requests version from xivo
 
- -- Sylvain Boily <sylvain@sylvain-DX4840>  Sun, 16 Aug 2015 20:17:32 -0400
+ -- Sylvain Boily <sboily@avencall.com>  Sun, 16 Aug 2015 20:17:32 -0400
 
 xivo-python-swaggerpy-packaging (0.2.1-1~xivo1) xivo-dev; urgency=medium
 
