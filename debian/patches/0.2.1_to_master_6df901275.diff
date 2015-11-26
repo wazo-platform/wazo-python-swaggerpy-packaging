@@ -1,0 +1,95 @@
+diff --git a/swaggerpy/client.py b/swaggerpy/client.py
+index a0107c0..6b9a2f0 100644
+--- a/swaggerpy/client.py
++++ b/swaggerpy/client.py
+@@ -5,6 +5,7 @@
+ """Swagger client library.
+ """
+ 
++import json
+ import logging
+ import os.path
+ import re
+@@ -55,6 +56,8 @@ class Operation(object):
+         method = self.json['httpMethod']
+         uri = self.uri
+         params = {}
++        data = None
++        headers = None
+         for param in self.json.get('parameters', []):
+             pname = param['name']
+             value = kwargs.get(pname)
+@@ -62,15 +65,25 @@ class Operation(object):
+             if isinstance(value, list):
+                 value = ",".join(value)
+ 
+-            if value:
++            if value is not None:
+                 if param['paramType'] == 'path':
+-                    uri = uri.replace('{%s}' % pname, str(value))
++                    uri = uri.replace('{%s}' % pname,
++                                      urllib.quote_plus(str(value)))
+                 elif param['paramType'] == 'query':
+                     params[pname] = value
++                elif param['paramType'] == 'body':
++                    if isinstance(value, dict):
++                        if data:
++                            data.update(value)
++                        else:
++                            data = value
++                    else:
++                        raise TypeError(
++                            "Parameters of type 'body' require dict input")
+                 else:
+                     raise AssertionError(
+                         "Unsupported paramType %s" %
+-                        param.paramType)
++                        param['paramType'])
+                 del kwargs[pname]
+             else:
+                 if param['required']:
+@@ -82,13 +95,22 @@ class Operation(object):
+                             (self.json['nickname'], kwargs.keys()))
+ 
+         log.info("%s %s(%r)", method, uri, params)
++
++        if data:
++            data = json.dumps(data)
++            headers = {'Content-type': 'application/json',
++                       'Accept': 'application/json'}
++
+         if self.json['is_websocket']:
+             # Fix up http: URLs
+             uri = re.sub('^http', "ws", uri)
++            if data:
++                raise NotImplementedError(
++                    "Sending body data with websockets not implmented")
+             return self.http_client.ws_connect(uri, params=params)
+         else:
+             return self.http_client.request(
+-                method, uri, params=params)
++                method, uri, params=params, data=data, headers=headers)
+ 
+ 
+ class Resource(object):
+diff --git a/swaggerpy/http_client.py b/swaggerpy/http_client.py
+index d9b7837..405e779 100644
+--- a/swaggerpy/http_client.py
++++ b/swaggerpy/http_client.py
+@@ -166,14 +166,14 @@ class SynchronousHttpClient(HttpClient):
+         self.authenticator = ApiKeyAuthenticator(
+             host=host, api_key=api_key, param_name=param_name)
+ 
+-    def request(self, method, url, params=None, data=None):
++    def request(self, method, url, params=None, data=None, headers=None):
+         """Requests based implementation.
+ 
+         :return: Requests response
+         :rtype:  requests.Response
+         """
+         req = requests.Request(
+-            method=method, url=url, params=params, data=data)
++            method=method, url=url, params=params, data=data, headers=headers)
+         self.apply_authentication(req)
+         return self.session.send(self.session.prepare_request(req))
+ 
