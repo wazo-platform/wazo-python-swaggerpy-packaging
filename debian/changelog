@@ -1,3 +1,9 @@
+xivo-python-swaggerpy-packaging (0.2.1-1~xivo5) xivo-dev; urgency=medium
+
+  * Remove patch "remove_auto_construct_params"
+
+ -- Francois Blackburn <fblackburn@avencall.com>  Tue, 15 Dec 2015 13:34:21 -0500
+
 xivo-python-swaggerpy-packaging (0.2.1-1~xivo4) xivo-dev; urgency=low
 
   * Add patches from git origin/master
