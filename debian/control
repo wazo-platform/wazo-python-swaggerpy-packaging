@@ -10,6 +10,6 @@ Homepage: https://github.com/digium/swagger-py
 
 Package: python-swaggerpy
 Architecture: all
-Depends: ${shlibs:Depends}, ${python:Depends}, ${misc:Depends}, python-websocket
+Depends: ${shlibs:Depends}, ${python:Depends}, ${misc:Depends}
 Description: Python library for swagger
  .

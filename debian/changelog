@@ -1,3 +1,9 @@
+xivo-python-swaggerpy-packaging (0.2.1-1~xivo7) xivo-dev; urgency=medium
+
+  * Remove the explicit python-websocket dependency
+
+ -- Francois Blackburn <fblackburn@avencall.com>  Wed, 16 Dec 2015 10:34:12 -0500
+
 xivo-python-swaggerpy-packaging (0.2.1-1~xivo6) xivo-dev; urgency=medium
 
   * Add the python-websocket dependency
