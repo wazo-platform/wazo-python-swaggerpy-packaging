@@ -1,3 +1,9 @@
+xivo-python-swaggerpy-packaging (0.2.1-1~xivo8) wazo-dev; urgency=medium
+
+  * update version
+
+ -- Etienne Lessard <elessard97@gmail.com>  Tue, 29 Nov 2016 16:27:35 -0500
+
 xivo-python-swaggerpy-packaging (0.2.1-1~xivo7) xivo-dev; urgency=medium
 
   * Remove the explicit python-websocket dependency
