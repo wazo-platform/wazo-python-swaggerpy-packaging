@@ -1,0 +1,171 @@
+patch from https://github.com/digium/swagger-py/pull/10
+diff --git a/setup.py b/setup.py
+index 6cbaeaa..4ebeba4 100755
+--- a/setup.py
++++ b/setup.py
+@@ -31,7 +31,7 @@ setup(
+         "Programming Language :: Python",
+     ],
+     tests_require=["nose", "tissue", "coverage", "httpretty"],
+-    install_requires=["requests", "websocket-client"],
++    install_requires=["requests", "websocket-client", "six"],
+     entry_points="""
+     [console_scripts]
+     swagger-codegen = swaggerpy.codegen:main
+diff --git a/swaggerpy/__init__.py b/swaggerpy/__init__.py
+index 824ce0a..7e11723 100644
+--- a/swaggerpy/__init__.py
++++ b/swaggerpy/__init__.py
+@@ -10,5 +10,5 @@ More information on Swagger can be found `on the Swagger website
+ 
+ __all__ = ["client", "codegen", "processors", "swagger_model"]
+ 
+-from swagger_model import load_file, load_json, load_url, Loader
+-from processors import SwaggerProcessor, SwaggerError
++from .swagger_model import load_file, load_json, load_url, Loader
++from .processors import SwaggerProcessor, SwaggerError
+diff --git a/swaggerpy/client.py b/swaggerpy/client.py
+index 6b9a2f0..7aa0779 100644
+--- a/swaggerpy/client.py
++++ b/swaggerpy/client.py
+@@ -9,7 +9,7 @@ import json
+ import logging
+ import os.path
+ import re
+-import urllib
++import six.moves.urllib as urllib
+ import swaggerpy
+ 
+ from swaggerpy.http_client import SynchronousHttpClient
+@@ -52,7 +52,8 @@ class Operation(object):
+         :param kwargs: ARI operation arguments.
+         :return: Implementation specific response or WebSocket connection
+         """
+-        log.info("%s?%r" % (self.json['nickname'], urllib.urlencode(kwargs)))
++        log.info("%s?%r" % (self.json['nickname'],
++                            urllib.parse.urlencode(kwargs)))
+         method = self.json['httpMethod']
+         uri = self.uri
+         params = {}
+@@ -68,7 +69,7 @@ class Operation(object):
+             if value is not None:
+                 if param['paramType'] == 'path':
+                     uri = uri.replace('{%s}' % pname,
+-                                      urllib.quote_plus(str(value)))
++                                      urllib.parse.quote_plus(str(value)))
+                 elif param['paramType'] == 'query':
+                     params[pname] = value
+                 elif param['paramType'] == 'body':
+diff --git a/swaggerpy/http_client.py b/swaggerpy/http_client.py
+index 405e779..de08474 100644
+--- a/swaggerpy/http_client.py
++++ b/swaggerpy/http_client.py
+@@ -10,7 +10,7 @@
+ import logging
+ import requests
+ import requests.auth
+-import urlparse
++import six.moves.urllib as urllib
+ import websocket
+ 
+ log = logging.getLogger(__name__)
+@@ -95,7 +95,7 @@ class Authenticator(object):
+         :param url: URL to check.
+         :return: True if matches host, port and scheme, False otherwise.
+         """
+-        split = urlparse.urlsplit(url)
++        split = urllib.parse.urlsplit(url)
+         return self.host == split.hostname
+ 
+     def apply(self, request):
+diff --git a/swaggerpy/swagger_model.py b/swaggerpy/swagger_model.py
+index 7b50f5d..7b59085 100644
+--- a/swaggerpy/swagger_model.py
++++ b/swaggerpy/swagger_model.py
+@@ -7,8 +7,8 @@
+ 
+ import json
+ import os
+-import urllib
+-import urlparse
++import six
++import six.moves.urllib as urllib
+ 
+ from swaggerpy.http_client import SynchronousHttpClient
+ from swaggerpy.processors import SwaggerProcessor, SwaggerError
+@@ -110,10 +110,14 @@ def json_load_url(http_client, url):
+     :param url: URL for JSON to parse
+     :return: Parsed JSON dict
+     """
+-    scheme = urlparse.urlparse(url).scheme
++    scheme = urllib.parse.urlparse(url).scheme
+     if scheme == 'file':
+         # requests can't handle file: URLs
+-        fp = urllib.urlopen(url)
++        fp = urllib.request.urlopen(url)
++        if six.PY3:
++            import codecs
++            reader = codecs.getreader(fp.info().get_content_charset('utf-8'))
++            fp = reader(fp)
+         try:
+             return json.load(fp)
+         finally:
+@@ -184,7 +188,7 @@ class Loader(object):
+         :param api_dict: api object from resource listing.
+         """
+         path = api_dict.get('path').replace('{format}', 'json')
+-        api_dict['url'] = urlparse.urljoin(base_url + '/', path.strip('/'))
++        api_dict['url'] = urllib.parse.urljoin(base_url + '/', path.strip('/'))
+         api_dict['api_declaration'] = json_load_url(
+             self.http_client, api_dict['url'])
+ 
+@@ -224,10 +228,11 @@ def load_file(resource_listing_file, http_client=None, processors=None):
+     :raise: IOError: On error reading api-docs.
+     """
+     file_path = os.path.abspath(resource_listing_file)
+-    url = urlparse.urljoin('file:', urllib.pathname2url(file_path))
++    url = urllib.parse.urljoin('file:', urllib.request.pathname2url(file_path))
+     # When loading from files, everything is relative to the resource listing
+     dir_path = os.path.dirname(file_path)
+-    base_url = urlparse.urljoin('file:', urllib.pathname2url(dir_path))
++    base_url = urllib.parse.urljoin('file:',
++                                    urllib.request.pathname2url(dir_path))
+     return load_url(url, http_client=http_client, processors=processors,
+                     base_url=base_url)
+ 
+diff --git a/swaggerpy_test/client_test.py b/swaggerpy_test/client_test.py
+index 6e922c7..6dcc960 100644
+--- a/swaggerpy_test/client_test.py
++++ b/swaggerpy_test/client_test.py
+@@ -84,7 +84,7 @@ class ClientTest(unittest.TestCase):
+ 
+         resp = self.uut.pet.deletePet(petId=1234)
+         self.assertEqual(requests.codes.no_content, resp.status_code)
+-        self.assertEqual('', resp.content)
++        self.assertEqual(b'', resp.content)
+ 
+     def setUp(self):
+         # Default handlers for all swagger.py access
+diff --git a/swaggerpy_test/http_client_test.py b/swaggerpy_test/http_client_test.py
+index 11d6dad..126c221 100644
+--- a/swaggerpy_test/http_client_test.py
++++ b/swaggerpy_test/http_client_test.py
+@@ -36,7 +36,7 @@ class SynchronousClientTestCase(unittest.TestCase):
+         self.assertEqual('expected', resp.text)
+         self.assertEqual('application/x-www-form-urlencoded',
+                          httpretty.last_request().headers['content-type'])
+-        self.assertEqual("foo=bar",
++        self.assertEqual(b"foo=bar",
+                          httpretty.last_request().body)
+ 
+     @httpretty.activate
+@@ -53,7 +53,8 @@ class SynchronousClientTestCase(unittest.TestCase):
+         self.assertEqual('expected', resp.text)
+         self.assertEqual({'foo': ['bar']},
+                          httpretty.last_request().querystring)
+-        self.assertEqual('Basic %s' % base64.b64encode("unit:peekaboo"),
++        self.assertEqual('Basic %s' %
++                         base64.b64encode(b"unit:peekaboo").decode(),
+                          httpretty.last_request().headers.get('Authorization'))
+ 
+     @httpretty.activate
