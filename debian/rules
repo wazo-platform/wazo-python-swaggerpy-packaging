@@ -4,9 +4,22 @@
 PKG = $(word 2,$(shell dpkg-parsechangelog | grep Source))
 VER ?= $(shell cat VERSION)
 SWAGGERPY_URL_DOWNLOAD = "https://github.com/digium/swagger-py/archive/${VER}.tar.gz"
+export PYBUILD_NAME=swaggerpy
+export PYBUILD_DISABLE=test
+export PYBUILD_SYSTEM=distutils
 
 %:
-	dh $@ --with python2
+	dh $@ --with python2,python3 --buildsystem=pybuild
+
+
+override_dh_auto_clean:
+	if [ -f setup.py ]; then dh_auto_clean; fi
+
+override_dh_install:
+	dh_install
+	# Make python 2&3 swaggerpy co-installable
+	rm debian/python-swaggerpy/usr/bin/swagger-codegen
+	rm debian/python3-swaggerpy/usr/bin/swagger-codegen
 
 .PHONY: get-orig-source
 

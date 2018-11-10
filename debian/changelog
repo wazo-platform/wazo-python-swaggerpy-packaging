@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-2) wazo-dev-stretch; urgency=medium
+
+  * package python3
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Sat, 10 Nov 2018 08:42:40 -0500
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-1) wazo-dev-stretch; urgency=medium
 
   * rename to wazo-python-swaggerpy-packaging
