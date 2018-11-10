@@ -1,4 +1,4 @@
-wazo-python-swaggerpy-packaging (0.2.2-1~wazo1) wazo-dev-stretch; urgency=medium
+wazo-python-swaggerpy-packaging (0.2.1+wazo-1) wazo-dev-stretch; urgency=medium
 
   * rename to wazo-python-swaggerpy-packaging
 
