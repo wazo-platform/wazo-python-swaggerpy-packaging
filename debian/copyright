@@ -22,7 +22,5 @@ are met:
 	software without specific prior written permission.
 
 Files: debian/*
-License: GPL-3
-
-Files: fetch_tarball.sh
+Copyright: 2015-2018 The Wazo Authors  (see the AUTHORS file)
 License: GPL-3

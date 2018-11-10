@@ -12,4 +12,4 @@ SWAGGERPY_URL_DOWNLOAD = "https://github.com/digium/swagger-py/archive/${VER}.ta
 
 get-orig-source:
 	@echo "# Downloading..."
-	wget -nv -T10 -t3 $(SWAGGERPY_URL_DOWNLOAD) -O ../$(PKG)_$(VER).orig.tar.gz
+	wget -nv -T10 -t3 $(SWAGGERPY_URL_DOWNLOAD) -O ../$(PKG)_$(VER)+wazo.orig.tar.gz
