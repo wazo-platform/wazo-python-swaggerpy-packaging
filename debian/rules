@@ -15,6 +15,11 @@ export PYBUILD_SYSTEM=distutils
 override_dh_auto_clean:
 	if [ -f setup.py ]; then dh_auto_clean; fi
 
+override_dh_install:
+	dh_install
+	# Make python 2&3 swaggerpy co-installable
+	rm debian/python-swaggerpy/usr/bin/swagger-codegen
+	rm debian/python3-swaggerpy/usr/bin/swagger-codegen
 
 .PHONY: get-orig-source
 
