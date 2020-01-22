@@ -1,6 +1,6 @@
 Source: wazo-python-swaggerpy-packaging
 Section: python
-Priority: extra
+Priority: optional
 Maintainer: Wazo Maintainers <dev@wazo.community>
 Build-Depends:
  debhelper (>= 9),
@@ -22,6 +22,7 @@ Depends:
  python-six
 Description: Python library for swagger
  .
+ Swagger.py is a Python library for using Swagger defined API's.
 
 Package: python3-swaggerpy
 Architecture: all
@@ -32,3 +33,4 @@ Depends:
  python3-six
 Description: Python library for swagger - Python 3
  .
+ Swagger.py is a Python library for using Swagger defined API's.
