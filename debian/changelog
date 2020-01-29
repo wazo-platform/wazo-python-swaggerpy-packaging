@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-3) wazo-dev-buster; urgency=medium
+
+  * rebuild
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Wed, 29 Jan 2020 12:55:36 +0100
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-2) wazo-dev-stretch; urgency=medium
 
   * package python3
