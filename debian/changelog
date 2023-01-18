@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-4) wazo-dev-buster; urgency=medium
+
+  * Remove Python 2 packaging
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Wed, 18 Jan 2023 14:53:21 -0500
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-3) wazo-dev-buster; urgency=medium
 
   * rebuild
