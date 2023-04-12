@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-6) wazo-dev-bullseye; urgency=medium
+
+  * rebuild for Bullseye
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Wed, 12 Apr 2023 09:42:52 -0400
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-5) wazo-dev-buster; urgency=medium
 
   * Use debhelper 12
