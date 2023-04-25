@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-7) wazo-dev-bullseye; urgency=medium
+
+  * Update zuul config
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Tue, 25 Apr 2023 18:55:35 -0400
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-6) wazo-dev-bullseye; urgency=medium
 
   * rebuild for Bullseye
