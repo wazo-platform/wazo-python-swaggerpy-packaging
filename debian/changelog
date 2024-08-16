@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-8) wazo-dev-bullseye; urgency=medium
+
+  * follow debian copyright guidelines
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Fri, 16 Aug 2024 08:19:31 -0400
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-7) wazo-dev-bullseye; urgency=medium
 
   * Update zuul config
