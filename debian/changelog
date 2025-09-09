@@ -1,3 +1,9 @@
+wazo-python-swaggerpy-packaging (0.2.1+wazo-9) wazo-dev-bookworm; urgency=medium
+
+  * Rebuild for Bookworm
+
+ -- Wazo Maintainers <dev+pkg@wazo.community>  Tue, 09 Sep 2025 11:36:11 -0400
+
 wazo-python-swaggerpy-packaging (0.2.1+wazo-8) wazo-dev-bullseye; urgency=medium
 
   * follow debian copyright guidelines
