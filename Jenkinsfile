@@ -20,7 +20,9 @@ pipeline {
     stage ('Build package') {
       steps {
         build job: 'build-package-no-arch', parameters: [
-          string(name: 'PACKAGE', value: "${JOB_NAME}"),
+          string(name: 'PACKAGE', value: "wazo-python-swaggerpy-packaging"),
+          string(name: "BRANCH", value: "bookworm"),
+          string(name: "DISTRIBUTION", value: "wazo-dev-bookworm"),
           string(name: 'VERSION', value: "${version}"),
         ]
       }
